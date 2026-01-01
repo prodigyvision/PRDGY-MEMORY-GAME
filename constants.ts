@@ -19,15 +19,15 @@ export const ASSETS = [
 ];
 
 export const LEVELS: Record<number, LevelConfig> = {
-  1: { pairs: 2, time: 20, gridCols: 'grid-cols-2' },
-  2: { pairs: 4, time: 30, gridCols: 'grid-cols-2 md:grid-cols-4' },
-  3: { pairs: 6, time: 40, gridCols: 'grid-cols-3 md:grid-cols-4' },
-  4: { pairs: 8, time: 55, gridCols: 'grid-cols-4' },
-  5: { pairs: 10, time: 75, gridCols: 'grid-cols-4 md:grid-cols-5' }
+  1: { pairs: 2, time: 25, gridCols: 'grid-cols-2' },
+  2: { pairs: 4, time: 35, gridCols: 'grid-cols-2 md:grid-cols-4' },
+  3: { pairs: 6, time: 45, gridCols: 'grid-cols-3 md:grid-cols-4' },
+  4: { pairs: 8, time: 60, gridCols: 'grid-cols-3 md:grid-cols-4' },
+  5: { pairs: 10, time: 80, gridCols: 'grid-cols-4 md:grid-cols-5' }
 };
 
 export const SOUNDS = {
-  bgm: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Smooth electronic loop
+  bgm: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
   flip: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
   match: "https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3",
   win: "https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3",

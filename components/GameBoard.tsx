@@ -6,7 +6,7 @@ import MemoryCard from './MemoryCard';
 interface GameBoardProps {
   cards: CardData[];
   gridCols: string;
-  onMatch: () => void;
+  onMatch: (ids: number[]) => void;
   onFlip: () => void;
 }
 
@@ -27,7 +27,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ cards, gridCols, onMatch, onFlip 
     const newFlippedIds = [...flippedIds, card.uniqueId];
     setFlippedIds(newFlippedIds);
 
-    // Update internal state immediately for visual flip
     setInternalCards(prev => prev.map(c => 
       c.uniqueId === card.uniqueId ? { ...c, isFlipped: true } : c
     ));
@@ -39,19 +38,17 @@ const GameBoard: React.FC<GameBoardProps> = ({ cards, gridCols, onMatch, onFlip 
       const secondCard = internalCards.find(c => c.uniqueId === secondId)!;
 
       if (firstCard.id === secondCard.id) {
-        // MATCH
         setTimeout(() => {
           setInternalCards(prev => prev.map(c => 
             (c.uniqueId === firstId || c.uniqueId === secondId) 
-              ? { ...c, isMatched: true, isFlipped: true } 
+              ? { ...c, isMatched: true } 
               : c
           ));
-          onMatch();
+          onMatch([firstId, secondId]);
           setFlippedIds([]);
           setBusy(false);
-        }, 600);
+        }, 500);
       } else {
-        // NO MATCH
         setTimeout(() => {
           setInternalCards(prev => prev.map(c => 
             (c.uniqueId === firstId || c.uniqueId === secondId) 
@@ -60,13 +57,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ cards, gridCols, onMatch, onFlip 
           ));
           setFlippedIds([]);
           setBusy(false);
-        }, 1000);
+        }, 800);
       }
     }
   };
 
   return (
-    <div className={`grid ${gridCols} gap-3 md:gap-5 w-full max-w-4xl perspective-1000`}>
+    <div className={`grid ${gridCols} gap-2 md:gap-5 w-full max-w-4xl perspective-1000`}>
       {internalCards.map((card) => (
         <MemoryCard 
           key={card.uniqueId} 
