@@ -40,30 +40,26 @@ const GameBoard: React.FC<GameBoardProps> = ({ cards, gridCols, onMatch, onFlip 
       if (firstCard.id === secondCard.id) {
         setTimeout(() => {
           setInternalCards(prev => prev.map(c => 
-            (c.uniqueId === firstId || c.uniqueId === secondId) 
-              ? { ...c, isMatched: true } 
-              : c
+            (c.uniqueId === firstId || c.uniqueId === secondId) ? { ...c, isMatched: true } : c
           ));
           onMatch([firstId, secondId]);
           setFlippedIds([]);
           setBusy(false);
-        }, 500);
+        }, 600);
       } else {
         setTimeout(() => {
           setInternalCards(prev => prev.map(c => 
-            (c.uniqueId === firstId || c.uniqueId === secondId) 
-              ? { ...c, isFlipped: false } 
-              : c
+            (c.uniqueId === firstId || c.uniqueId === secondId) ? { ...c, isFlipped: false } : c
           ));
           setFlippedIds([]);
           setBusy(false);
-        }, 800);
+        }, 1000);
       }
     }
   };
 
   return (
-    <div className={`grid ${gridCols} gap-2 md:gap-5 w-full max-w-4xl perspective-1000`}>
+    <div className={`game-grid ${gridCols} gap-3 md:gap-6 w-full max-w-lg md:max-w-3xl items-start h-fit`}>
       {internalCards.map((card) => (
         <MemoryCard 
           key={card.uniqueId} 

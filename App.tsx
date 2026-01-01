@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GameStatus, CardData, GameState } from './types';
 import { ASSETS, LEVELS, SOUNDS } from './constants';
 import StartScreen from './components/StartScreen';
@@ -38,15 +38,14 @@ const App: React.FC = () => {
   const playSound = (soundUrl: string) => {
     if (gameState.isMuted) return;
     const audio = new Audio(soundUrl);
+    audio.volume = 0.5;
     audio.play().catch(() => {});
   };
 
   const toggleMute = () => {
     setGameState(prev => {
       const newMuted = !prev.isMuted;
-      if (bgmRef.current) {
-        bgmRef.current.muted = newMuted;
-      }
+      if (bgmRef.current) bgmRef.current.muted = newMuted;
       return { ...prev, isMuted: newMuted };
     });
   };
@@ -95,7 +94,9 @@ const App: React.FC = () => {
 
   const startGame = () => {
     if (bgmRef.current) {
-      bgmRef.current.play().catch(() => {});
+      bgmRef.current.play().catch(() => {
+        // Handle autoplay restriction by waiting for first interaction
+      });
     }
     startLevel(1);
   };
@@ -108,9 +109,7 @@ const App: React.FC = () => {
       );
       
       const matchedCount = updatedCards.filter(c => c.isMatched).length;
-      const totalCards = updatedCards.length;
-      
-      if (matchedCount === totalCards) {
+      if (matchedCount === updatedCards.length) {
         clearInterval(timerRef.current!);
         if (prev.currentLevel < 5) {
           playSound(SOUNDS.win);
@@ -125,19 +124,14 @@ const App: React.FC = () => {
   };
 
   const resetGame = () => {
-    setGameState(prev => ({
-      ...prev,
-      currentLevel: 1,
-      status: 'START',
-      cards: [],
-      timeLeft: 0,
-    }));
+    setGameState(prev => ({ ...prev, currentLevel: 1, status: 'START', cards: [], timeLeft: 0 }));
   };
 
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center p-4 bg-black relative overflow-x-hidden">
-      <div className="absolute inset-0 bg-gradient-to-tr from-black via-[#0a0a0a] to-[#1a0a0a] z-0"></div>
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-900/10 blur-[120px] rounded-full z-0"></div>
+    <div className="h-[100dvh] w-full flex flex-col items-center bg-black relative overflow-hidden select-none">
+      {/* Background VFX */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0000] to-black z-0"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(229,9,20,0.05)_0%,transparent_70%)] z-0"></div>
       
       <Navbar 
         isMuted={gameState.isMuted} 
@@ -147,22 +141,20 @@ const App: React.FC = () => {
         status={gameState.status}
       />
 
-      <main className="w-full max-w-4xl z-10 flex-1 flex flex-col items-center justify-center pt-20 pb-24">
-        {gameState.status === 'START' && (
-          <StartScreen onStart={startGame} />
-        )}
+      <main className="w-full max-w-4xl z-10 flex-1 flex flex-col items-center justify-center px-4 pt-16 pb-20 overflow-hidden">
+        {gameState.status === 'START' && <StartScreen onStart={startGame} />}
 
-        {gameState.status === 'LEVEL_TRANSITION' && (
-          <LevelAnnouncer level={gameState.currentLevel} />
-        )}
+        {gameState.status === 'LEVEL_TRANSITION' && <LevelAnnouncer level={gameState.currentLevel} />}
 
         {gameState.status === 'PLAYING' && (
-          <GameBoard 
-            cards={gameState.cards} 
-            gridCols={LEVELS[gameState.currentLevel]?.gridCols || 'grid-cols-4'}
-            onMatch={onMatchFound}
-            onFlip={() => playSound(SOUNDS.flip)}
-          />
+          <div className="w-full h-full flex items-center justify-center overflow-y-auto py-4">
+            <GameBoard 
+              cards={gameState.cards} 
+              gridCols={LEVELS[gameState.currentLevel]?.gridCols || 'grid-cols-4'}
+              onMatch={onMatchFound}
+              onFlip={() => playSound(SOUNDS.flip)}
+            />
+          </div>
         )}
 
         {gameState.status === 'RESULT' && (
@@ -174,8 +166,8 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="fixed bottom-6 text-white/10 text-[10px] tracking-[0.3em] font-light z-10 pointer-events-none uppercase">
-        PRDGY Konfused Kingdom
+      <footer className="absolute bottom-4 text-white/10 text-[9px] tracking-[0.4em] font-medium z-10 pointer-events-none uppercase text-center w-full">
+        PRDGY &copy; KONFUSED KINGDOM
       </footer>
     </div>
   );

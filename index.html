@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>PRDGY: Konfused Kingdom</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -15,7 +15,8 @@
         background-color: #000;
         color: white;
         margin: 0;
-        overflow-x: hidden;
+        overflow: hidden; /* Prevent body scroll, use container scroll if needed */
+        height: 100dvh;
       }
 
       .glass-card {
@@ -26,12 +27,10 @@
         border-radius: 12px;
       }
 
-      .netflix-red {
-        background-color: #E50914;
-      }
-
-      .netflix-red-text {
-        color: #E50914;
+      .card-container {
+        perspective: 1000px;
+        aspect-ratio: 3/4;
+        width: 100%;
       }
 
       .card-inner {
@@ -53,35 +52,49 @@
         height: 100%;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
-        border-radius: 8px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
       }
 
       .card-front {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: #fff;
         transform: rotateY(180deg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .card-back {
-        background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-        border: 1px solid rgba(229, 9, 20, 0.3);
+        background: linear-gradient(145deg, #1a1a1a, #050505);
+        border: 2px solid rgba(229, 9, 20, 0.2);
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
       }
 
-      @keyframes pulse-red {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); border-color: #E50914; }
-      }
-
-      .matched {
-        animation: fade-out-matched 0.5s forwards;
+      .card-back::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.05);
+        pointer-events: none;
       }
 
       @keyframes fade-out-matched {
         0% { opacity: 1; transform: scale(1); }
-        100% { opacity: 0; transform: scale(0.9); visibility: hidden; }
+        100% { opacity: 0; transform: scale(0.85); visibility: hidden; }
+      }
+
+      .matched {
+        animation: fade-out-matched 0.5s forwards 0.3s;
+        pointer-events: none;
+      }
+
+      /* Grid fix for mobile stretching */
+      .game-grid {
+        display: grid;
+        align-content: center;
+        justify-items: center;
       }
     </style>
   <script type="importmap">
